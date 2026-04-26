@@ -1,0 +1,16 @@
+Revision history for Net-Async-MCP-Run
+
+{{$NEXT}}
+
+  - Rename to Net::Async::MCP::Run (was Net::Async::MCP::Server)
+  - Now inherits from Net::Async::MCP::Server (the new base server dist)
+  - run_stdio method added to Run module
+
+0.001     2026-04-25 13:33:52Z
+  - Initial release (as Net::Async::MCP::Server)
+  - Async MCP server for command execution
+  - Built on IO::Async and Future::AsyncAwait
+  - Exposes 'run' tool for command execution
+  - Supports allowed_commands whitelist, working_directory, timeout
+  - Optional output compression via MCP::Run::Compress
+  - Per-command validation via validator coderef
