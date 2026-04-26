@@ -1,15 +1,16 @@
 # NAME
 
-Net::Async::MCP::Server - Async MCP server for command execution
+Net::Async::MCP::Run - Async MCP server with command execution
 
 # SYNOPSIS
 
     use IO::Async::Loop;
-    use Net::Async::MCP::Server;
+    use Net::Async::MCP::Run;
+    use Net::Async::MCP::Server::Transport::Stdio;
 
     my $loop = IO::Async::Loop->new;
 
-    my $server = Net::Async::MCP::Server->new(
+    my $server = Net::Async::MCP::Run->new(
         name             => 'command-runner',
         allowed_commands => ['ls', 'cat', 'grep'],
         working_directory => '/tmp',
@@ -19,29 +20,16 @@ Net::Async::MCP::Server - Async MCP server for command execution
 
     $loop->add($server);
 
-    async sub main {
-        await $server->initialize;
-
-        my $tools = await $server->list_tools;
-        # [{name => 'run', description => '...', inputSchema => {...}}]
-
-        my $result = await $server->call_tool('run', {
-            command => 'ls -la',
-            working_directory => '/tmp',
-            timeout => 10,
-        });
-        # {content => [{type => 'text', text => '...'}], isError => 0}
-    }
-
-    main()->get;
+    Net::Async::MCP::Server::Transport::Stdio->new(
+        server => $server,
+    )->handle_requests;
 
 # DESCRIPTION
 
-L<Net::Async::MCP::Server> is an asynchronous MCP (Model Context Protocol) server
-for command execution, built on L<IO::Async> and L<Future::AsyncAwait>.
+L<Net::Async::MCP::Run> is an asynchronous MCP server that exposes a C<run> tool
+for command execution. Built on L<IO::Async> and L<Future::AsyncAwait>.
 
-Extends L<Net::Async::MCP> to act as an MCP server (not client) that exposes a
-C<run> tool for command execution. The async counterpart to L<MCP::Run::Bash>.
+Extends L<Net::Async::MCP::Server> with a command execution tool.
 
 # ATTRIBUTES
 
@@ -70,10 +58,7 @@ Default timeout in seconds. Defaults to 30.
 
 ## compress
 
-Enable output compression via L<MCP::Run::Compress>. When enabled, command
-output is filtered through compression filters before returning to the client.
-
-    $server->compress(1);
+Enable output compression via L<MCP::Run::Compress>.
 
 ## validator
 
@@ -88,16 +73,15 @@ Coderef that validates a command before execution.
 
 ## async method initialize()
 
-Performs MCP server initialization. Handles the C<initialize> request from the
-client, sends server info and capabilities, registers the 'run' tool.
+Performs MCP server initialization.
 
 ## async method list_tools()
 
-Returns ArrayRef of tool definitions. Returns the registered 'run' tool.
+Returns ArrayRef containing the 'run' tool definition.
 
 ## async method call_tool($name, $arguments)
 
-Calls the specified tool with arguments. For the 'run' tool:
+Executes the specified tool. For 'run' tool:
 
     my $result = await $server->call_tool('run', {
         command => 'ls -la',
@@ -109,11 +93,11 @@ Calls the specified tool with arguments. For the 'run' tool:
 
 Convenience constructor that creates a server and runs it in stdio mode.
 
-    Net::Async::MCP::Server->run_stdio(name => 'my-server');
+    Net::Async::MCP::Run->run_stdio(name => 'my-server');
 
 # SEE ALSO
 
-L<Net::Async::MCP>, L<MCP>, L<MCP::Server>, L<MCP::Run>, L<MCP::Run::Bash>.
+L<Net::Async::MCP::Server>, L<IO::Async::Notifier>, L<Future::AsyncAwait>.
 
 # AUTHOR
 
