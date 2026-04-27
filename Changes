@@ -2,6 +2,8 @@ Revision history for Net-Async-MCP-Run
 
 {{$NEXT}}
 
+  - Command transformation via L<MCP::Run::Compress> (e.g. Co-Authored-By injection)
+  - Disable transformation via C<MCP_RUN_COMPRESS_NO_CO_AUTHORED> env var
   - Rename to Net::Async::MCP::Run (was Net::Async::MCP::Server)
   - Now inherits from Net::Async::MCP::Server (the new base server dist)
   - run_stdio method added to Run module

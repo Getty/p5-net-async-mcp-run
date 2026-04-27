@@ -1,5 +1,5 @@
+requires 'MCP::Run';
 requires 'Net::Async::MCP::Server';
-requires 'MCP::Run::Compress';
 requires 'IO::Async';
 requires 'Future::AsyncAwait';
 requires 'JSON::MaybeXS';

@@ -74,6 +74,18 @@ sub timeout { shift->{timeout} }
 sub compress { shift->{compress} }
 sub validator { shift->{validator} }
 
+=head1 ENVIRONMENT
+
+=head2 MCP_RUN_COMPRESS_NO_CO_AUTHORED
+
+When set to a true value, disables the command transformation performed by
+L<MCP::Run::Compress> (e.g., Co-Authored-By injection). This allows running
+the server without modifying command output for git commit purposes.
+
+    $ENV{MCP_RUN_COMPRESS_NO_CO_AUTHORED} = 1;
+
+=cut
+
 sub _build_capabilities {
     my ( $self ) = @_;
     return { tools => {} };
@@ -127,6 +139,11 @@ async sub _handle_run {
     my $dir     = $arguments->{working_directory} // $self->working_directory;
     my $to      = $arguments->{timeout}    // $self->timeout;
     my $comp    = $arguments->{compress}  // $self->compress;
+
+    # Transform command if compressor has command_transform (e.g., Co-Authored-By)
+    if ($self->{_compressor} && !$ENV{MCP_RUN_COMPRESS_NO_CO_AUTHORED}) {
+        $command = $self->{_compressor}->transform_command($command);
+    }
 
     my $validation = $self->_validate_command( $command, $dir );
     if ( $validation ne '1' ) {
