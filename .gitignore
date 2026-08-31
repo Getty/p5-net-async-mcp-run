@@ -40,3 +40,7 @@ Net-Async-MCP-Run-*
 .env
 .envrc
 
+
+# karr materialized task view -- never commit
+tasks/
+config.yml

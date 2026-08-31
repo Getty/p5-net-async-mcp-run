@@ -1,0 +1,2 @@
+claude: true
+prompt: "Drain the net-async-mcp-run board. Delegate behavior-relevant work (the run tool, command execution, dispatch, validation, MCP::Run::Compress integration, tests) to net-async-mcp-run-worker; run `dzil test` (or `prove -lr t/`) to verify; never run `dzil release`, upload to CPAN, or act on a public issue tracker. Stop when nothing actionable remains."
