@@ -316,6 +316,14 @@ this list are rejected with an error result.
 
     $server->allowed_commands(['ls', 'cat', 'grep']);
 
+B<This is a filter, not a sandbox.> Only the first whitespace-separated token
+of the command is checked against the list; the full command string is then
+executed through C<< /bin/sh -c >>. A permitted first token therefore lets the
+rest of the shell line run unrestricted. For example, with C<ls> allowed,
+C<< ls; rm -rf / >> passes the check. For real command policy, supply a
+L</validator> coderef, which receives the entire command string and can reject
+it.
+
 =head2 working_directory
 
 Default working directory for command execution. Can be overridden per-invocation.
