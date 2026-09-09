@@ -1,0 +1,18 @@
+---
+class: standard
+completed: 2026-09-09T11:12:03Z
+created: 2026-08-31T04:37:44Z
+id: 4
+priority: medium
+started: 2026-09-09T11:11:40Z
+status: done
+tags:
+- security
+- docs
+title: Document allowed_commands is a filter, not a sandbox
+updated: 2026-09-09T11:12:03Z
+---
+
+_validate_command checks only the first whitespace token, then runs the full string via /bin/sh -c, so allowed_commands does not confine the shell. Document this boundary in POD and point users to the validator coderef for real policy.
+
+2026-09-09 11:11 Documented in POD that allowed_commands is a filter not a sandbox: only the first token is checked, then the whole string runs via bin-sh -c, so a permitted first token lets the rest of the line run; points users to the validator coderef for real policy. POD only, no behavior change. podchecker OK, perl -c OK, pod-syntax plus load/constructor/run_stdio tests green, no new failures. Commit 93bb928 on branch agent-phase2. NOTE: repo dzil test is RED at baseline due to the separate MCP 2026-07-28 migration blocker filed as ticket 5; k4 is independent of it.
