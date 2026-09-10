@@ -14,7 +14,7 @@ subtest 'allowed_commands - allowed command succeeds' => sub {
     );
     $loop->add($server);
 
-    $server->initialize->get;
+    $server->discover->get;
 
     my $result = $server->call_tool('run', {
         command => 'echo allowed',
@@ -32,7 +32,7 @@ subtest 'allowed_commands - disallowed command fails with error' => sub {
     );
     $loop->add($server);
 
-    $server->initialize->get;
+    $server->discover->get;
 
     my $result = $server->call_tool('run', {
         command => 'rm -rf /',
@@ -50,7 +50,7 @@ subtest 'working_directory - command runs in specified directory' => sub {
     );
     $loop->add($server);
 
-    $server->initialize->get;
+    $server->discover->get;
 
     my $result = $server->call_tool('run', {
         command => 'pwd',

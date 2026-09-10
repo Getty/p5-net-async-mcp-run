@@ -13,7 +13,7 @@ subtest 'call_tool executes command and returns result' => sub {
     );
     $loop->add($server);
 
-    $server->initialize->get;
+    $server->discover->get;
 
     my $result = $server->call_tool('run', {
         command => 'echo hello world',
@@ -30,7 +30,7 @@ subtest 'call_tool with exit code 0' => sub {
     );
     $loop->add($server);
 
-    $server->initialize->get;
+    $server->discover->get;
 
     my $result = $server->call_tool('run', {
         command => 'true',
@@ -47,7 +47,7 @@ subtest 'call_tool with exit code != 0' => sub {
     );
     $loop->add($server);
 
-    $server->initialize->get;
+    $server->discover->get;
 
     my $result = $server->call_tool('run', {
         command => 'false',

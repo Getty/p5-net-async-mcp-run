@@ -14,7 +14,7 @@ subtest 'timeout - command that times out returns exit code 124' => sub {
     );
     $loop->add($server);
 
-    $server->initialize->get;
+    $server->discover->get;
 
     my $result = $server->call_tool('run', {
         command => 'sleep 10',

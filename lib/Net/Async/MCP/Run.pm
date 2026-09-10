@@ -326,9 +326,11 @@ Coderef that validates a command before execution.
 
 =head1 METHODS
 
-=head2 async method initialize()
+=head2 async method discover()
 
-Performs MCP server initialization.
+Performs the C<server/discover> handshake. Returns a Future that resolves to
+the server's supported protocol versions, capabilities and cache hints. See
+L<Net::Async::MCP::Server/discover>.
 
 =head2 async method list_tools()
 

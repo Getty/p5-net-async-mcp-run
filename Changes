@@ -6,6 +6,8 @@ Revision history for Net-Async-MCP-Run
   - Disable transformation via C<MCP_RUN_COMPRESS_NO_CO_AUTHORED> env var
   - Rename to Net::Async::MCP::Run (was Net::Async::MCP::Server)
   - Now inherits from Net::Async::MCP::Server (the new base server dist)
+  - Adopt the base server's server/discover handshake; the initialize
+    handshake and its wire method are gone
   - run_stdio method added to Run module
 
 0.001     2026-04-25 13:33:52Z

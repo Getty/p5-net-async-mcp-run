@@ -13,7 +13,7 @@ subtest 'list_tools returns run tool definition' => sub {
     );
     $loop->add($server);
 
-    $server->initialize->get;
+    $server->discover->get;
 
     my $tools = $server->list_tools->get;
 

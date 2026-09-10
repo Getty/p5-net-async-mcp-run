@@ -14,7 +14,7 @@ subtest 'validator - returns 1 (allowed)' => sub {
     );
     $loop->add($server);
 
-    $server->initialize->get;
+    $server->discover->get;
 
     my $result = $server->call_tool('run', {
         command => 'echo validated',
@@ -32,7 +32,7 @@ subtest 'validator - returns string (denied with reason)' => sub {
     );
     $loop->add($server);
 
-    $server->initialize->get;
+    $server->discover->get;
 
     my $result = $server->call_tool('run', {
         command => 'echo this should be blocked',
@@ -50,7 +50,7 @@ subtest 'validator - returns undef (denied without reason)' => sub {
     );
     $loop->add($server);
 
-    $server->initialize->get;
+    $server->discover->get;
 
     my $result = $server->call_tool('run', {
         command => 'echo this should be blocked',
