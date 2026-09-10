@@ -1,0 +1,23 @@
+---
+claimed_at: 2026-09-10T01:40:50Z
+claimed_by: worker-b
+class: standard
+completed: 2026-09-10T01:40:27Z
+created: 2026-09-09T11:11:03Z
+id: 5
+priority: high
+started: 2026-09-10T01:22:21Z
+status: done
+tags:
+- migration
+- blocker
+- tests
+title: Migrate Net::Async::MCP::Run to MCP 2026-07-28 base API (initialize -> discover)
+updated: 2026-09-10T01:40:50Z
+---
+
+Base Net-Async-MCP-Server migrated in commit 81194a7: the public initialize method was replaced by discover (server/discover RPC). Net-Async-MCP-Run is not migrated. 7 tests call server->initialize and POD documents a =head2 async method initialize. Against the installed local base 0.002 all 7 die with Cant locate object method initialize, so dzil test is RED at baseline; only 00-load, 01-constructor and 75-run_stdio pass. Migrate the module and its tests to the new discover handshake before the suite can go green. Blocks green verification of tickets 2 and 3. Local base authoritative; no release involved.
+
+Fleet-Runde Worker B: In Arbeit. initialize->discover Migration gegen installierte Basis 0.002, Baseline grün machen. Delegiert an net-async-mcp-run-worker.
+
+Erledigt & unabhängig verifiziert (Worker B): initialize->discover, Commit 6d93459. Rote Baseline behoben, Suite 12 Dateien/28 Tests grün + author pod-syntax. Lokal, kein Push.
