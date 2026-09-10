@@ -1,0 +1,24 @@
+---
+block_reason: Maintainer-Designentscheidung Dispatch-Reconcile A vs B noetig; nicht
+  autonom entschieden.
+blocked: true
+claimed_at: 2026-09-10T01:41:44Z
+claimed_by: worker-b
+class: standard
+created: 2026-08-31T04:37:36Z
+depends_on:
+- 5
+id: 2
+priority: medium
+status: backlog
+tags:
+- architecture
+title: Reconcile the two run tool dispatch paths
+updated: 2026-09-10T01:41:44Z
+---
+
+The run tool is wired twice: _register_run_tool registers a code => sub{...} ref, and call_tool is fully overridden to dispatch run -> _handle_run. The overridden call_tool wins, so the registered code ref is dead. Either drop the code ref or route dispatch through the base call_tool, so a second tool cannot be half-wired.
+
+2026-09-09 11:12 Blocked: cannot obtain a green dzil test (the required proof) because the repo baseline is RED from the un-migrated MCP 2026-07-28 base API (ticket 5) - 7 tests die on the removed initialize method. The fix is understood: the base call_tool already dispatches via the registered code ref, so remove the Run.pm call_tool override and align the code-ref argument convention, plus a regression test that a second registered tool dispatches. It cannot be verified against a red suite. Resume after ticket 5.
+
+STOPP - Maintainer-Designentscheidung noetig, nicht geraten. User-Vorgabe: k2/k3 nur wenn klar, sonst dokumentiert lassen - k2 ist NICHT klar. Baseline jetzt gruen durch k5, also testbar. Zwei gegenlaeufige valide Richtungen. Richtung A - Override kanonisch: toten code-Ref aus _register_run_tool entfernen, call_tool-Override bleibt Live-Pfad; verhaltensneutral, minimal, passt zur bewusst geflaggten Seam-Zukunftsanweisung. Richtung B - Base-code-Ref-Dispatch kanonisch: Override entfernen; erfordert _handle_run-Signaturaenderung weil Override Name plus Arguments liefert, der Base-code-Ref aber nur Arguments, sonst bleibt command undef; aendert zudem die Unknown-Tool-Fehlermeldung von Unknown-tool zu No-tool-registered; architektonisch sauberer aber Verhaltens-/API-Aenderung und riskanter. EMPFEHLUNG Worker B: Richtung A - low-risk, pattern-konform, verhaltensneutral. Nach Entscheid: Umsetzung plus Regressionstest.
