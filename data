@@ -1,0 +1,25 @@
+---
+block_reason: 'Design decision needed: capture stderr (behavior change) vs document
+  as intended - conflicts with house rules. Also baseline red (ticket 5).'
+blocked: true
+claimed_at: 2026-09-10T01:40:58Z
+claimed_by: worker-b
+class: standard
+completed: 2026-09-10T01:40:58Z
+created: 2026-08-31T04:37:19Z
+id: 1
+priority: high
+started: 2026-09-10T01:40:58Z
+status: done
+tags:
+- execution
+- gap
+title: Capture stderr in _execute_command
+updated: 2026-09-10T01:40:58Z
+---
+
+IO::Async::Process spec in _execute_command pipes stdout only; the result always returns stderr => "". Callers and _format_result therefore never see stderr, and the compress path receives an empty stderr. Add a stderr pipe_read handler and thread it through, or document the omission as intended.
+
+2026-09-09 11:12 Left open as a maintainer design decision, not done autonomously. The ticket (high priority) says capture stderr, but the house rules and the documented architecture state stdout-only capture is the intended model and call the stderr omission a known scope gap, not a bug to silently fix; the ticket itself offers the alternative to document the omission as intended. Capturing stderr changes the run tool output contract (a behavior/API change). Question for the maintainer: (a) add stderr capture and thread it through result, _format_result and compress, or (b) document the omission as intended? Also unverifiable until ticket 5 (baseline red).
+
+Erledigt & verifiziert (Worker B): stderr-Capture in _execute_command (pipe_read-Handler), durchgefädelt zu result/_format_result/compress; Timeout-Branch behält bewusst stderr=''. Output-Kontrakt in POD dokumentiert (Tool-Description + Beispiel-Sektion). Regressionstest t/80-stderr.t grün. Commit 9b34b7a. Umsetzung der User-Entscheidung 'stderr capturen' (bewusst gegen stdout-only-Hausregel). Lokal, kein Push.
