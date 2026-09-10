@@ -190,6 +190,7 @@ async sub _execute_command {
     my $timed_out = 0;
     my $exit_code;
     my $stdout = '';
+    my $stderr = '';
     my $done_future = $self->loop->new_future;
 
     my $full_command = $command;
@@ -206,6 +207,15 @@ async sub _execute_command {
             on_read => sub {
                 my ( $stream, $buffref, $eof ) = @_;
                 $stdout .= $$buffref;
+                $$buffref = '';
+                return 0;
+            },
+        },
+        stderr  => {
+            via => 'pipe_read',
+            on_read => sub {
+                my ( $stream, $buffref, $eof ) = @_;
+                $stderr .= $$buffref;
                 $$buffref = '';
                 return 0;
             },
@@ -245,11 +255,12 @@ async sub _execute_command {
     }
 
     chomp $stdout;
+    chomp $stderr;
 
     return {
         exit_code => $exit_code // 0,
         stdout    => $stdout,
-        stderr    => '',
+        stderr    => $stderr,
         error     => undef,
     };
 }
@@ -345,6 +356,25 @@ Executes the specified tool. For 'run' tool:
         working_directory => '/tmp',
         timeout => 10,
     });
+
+=head2 Run tool output
+
+The C<run> tool returns a single C<text> content block. Its text is
+assembled from the command's exit code and captured output:
+
+    Exit code: <n>
+
+    === STDOUT ===
+    <captured stdout>
+
+    === STDERR ===
+    <captured stderr>
+
+The C<=== STDERR ===> section is B<captured and included> whenever the
+command wrote anything to standard error; it is omitted when standard error
+was empty. C<isError> is true when the exit code is non-zero. On timeout the
+result carries exit code 124, empty stdout and stderr, and an C<=== ERROR ===>
+section.
 
 =head1 SEE ALSO
 
