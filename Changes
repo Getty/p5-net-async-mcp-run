@@ -11,6 +11,9 @@ Revision history for Net-Async-MCP-Run
   - Capture standard error from run commands; the result text now includes
     an === STDERR === section when the command writes to stderr, where it
     was previously always empty
+  - Pass the executed command to MCP::Run::Compress so command-specific
+    output filters apply under compress; the compressor previously received
+    an empty command and matched none of its filters
   - run_stdio method added to Run module
 
 0.001     2026-04-25 13:33:52Z

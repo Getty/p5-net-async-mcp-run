@@ -247,6 +247,7 @@ async sub _execute_command {
 
     if ( $timed_out ) {
         return {
+            command   => $command,
             exit_code => 124,
             stdout    => '',
             stderr    => '',
@@ -258,6 +259,7 @@ async sub _execute_command {
     chomp $stderr;
 
     return {
+        command   => $command,
         exit_code => $exit_code // 0,
         stdout    => $stdout,
         stderr    => $stderr,
