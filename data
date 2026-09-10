@@ -1,0 +1,27 @@
+---
+block_reason: Baseline red from MCP 2026-07-28 migration (ticket 5); cannot verify
+  green. See note.
+blocked: true
+claimed_at: 2026-09-10T01:41:06Z
+claimed_by: worker-b
+class: standard
+completed: 2026-09-10T01:41:06Z
+created: 2026-08-31T04:37:40Z
+depends_on:
+- 5
+id: 3
+priority: medium
+started: 2026-09-10T01:41:06Z
+status: done
+tags:
+- compress
+- gap
+title: compress never receives the executed command
+updated: 2026-09-10T01:41:06Z
+---
+
+_format_result calls compressor->compress($result->{command} // "", ...), but _execute_command never sets a command key on the result hash, so compress always gets an empty command string. Pass the command through the result or drop the unused argument.
+
+2026-09-09 11:12 Blocked: same baseline-red cause as ticket 5 (removed initialize method). The bug is understood: _execute_command never sets a command key on its result, so _format_result passes an empty command to compressor->compress, which needs it (its _pipeline uses the command for filter selection and command rewrite). Fix: thread the executed command through the result hash and add a regression test that compress receives the real command. Cannot verify against a red suite. Resume after ticket 5.
+
+Erledigt & verifiziert (Worker B): command an Compressor gefädelt (fehlte in _execute_command -> Filter feuerten nie unter compress=1). Fix in beiden Return-Branches (User-Kommando, nicht cd-gewrappt). Regressionstest t/85-compress-command.t grün, t/60-compress.t grün. Commit 9369915. Lokal, kein Push.
