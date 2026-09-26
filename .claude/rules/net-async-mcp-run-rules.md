@@ -28,14 +28,14 @@ This rule depends on whether the Agent/Task tool is available to you.
 
 - **You can spawn subagents** (orchestrating main agent): do NOT touch behavior-relevant
   code yourself — delegate to `net-async-mcp-run-worker`. Your lane: coordinate, inspect,
-  plan, review diffs, run tests, manage git, edit non-behavioral docs. Why: only the
+  plan, review diffs, run tests, edit non-behavioral docs. Why: only the
   `net-async-mcp-run-*` agents get the full Perl/MCP/IO::Async skill set force-loaded via
   `briefing.skills`; you get no briefing and would touch internals with too little context.
 
   | Task | Agent |
   |---|---|
   | Implement / refactor / debug / test anything under `lib/` or `t/` | `net-async-mcp-run-worker` (default) |
-  | Pre-release audit | `net-async-mcp-run-release-checker` |
+  | Commits, `Changes`, card → done, pre-release audit | `net-async-mcp-run-release-manager` |
 
 - **You cannot spawn subagents** (you ARE a `net-async-mcp-run-*` agent): the delegation
   lock does not apply — implement, refactor, debug, and test per these rules.
@@ -43,6 +43,9 @@ This rule depends on whether the Agent/Task tool is available to you.
 Behavior-relevant = the `run` tool, command execution and its timeout, tool dispatch,
 validation/`allowed_commands`, `MCP::Run::Compress` integration, the public API, error
 handling, tests. Pure prose docs and Changes notes are not.
+
+**Only `net-async-mcp-run-release-manager` commits.** A worker leaves a commit-ready tree and hands its card
+to `review`; you then dispatch `net-async-mcp-run-release-manager` to cut the commit and close the card.
 
 ## Project-specific hazards
 
@@ -75,13 +78,13 @@ the user explicitly says to handle a specific issue.
 ## Coordination — karr board
 
 Internal AI-to-AI coordination uses `karr` (git-native kanban; state in `refs/karr/*`),
-skill hardlinked at `.claude/skills/kanban-issues-karr-cli/`. This is a small,
+skill hardlinked at `.claude/skills/kanban-issues-karr-coordination/`. This is a small,
 single-module repo with typically one agent at a time, so reach for the board when work
 spans multiple sessions or subagents, not for routine single-session tasks. A board is
 initialized here (`karr board`) — do not run `karr init`. When fanning work out, serialize
 board mutations (`karr move`/`handoff`/`sync`): parallel implementation is fine, but
 concurrent board writes have OOM-rebooted a host — collect results, then loop the writes
-sequentially. Full command surface: skill `kanban-issues-karr-cli`.
+sequentially. Full command surface: skill `kanban-issues-karr-coordination`.
 
 ## Perl / MCP / IO::Async specifics — reference, don't restate
 
