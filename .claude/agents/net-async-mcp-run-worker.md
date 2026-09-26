@@ -2,7 +2,6 @@
 name: net-async-mcp-run-worker
 description: "Default Net::Async::MCP::Run worker — implement, refactor, debug, and test code in this distribution. Pre-loaded with all Perl/MCP/IO::Async conventions and this repo's architecture: the server-subclass shape, the two tool-dispatch paths, the /bin/sh execution model, the allowed_commands gate and the MCP::Run::Compress reuse. Leaves a commit-ready tree; never commits — commits belong to net-async-mcp-run-release-manager."
 model: inherit
-allowed-tools: Read, Edit, Write, Bash, Glob, Grep
 briefing:
   skills:
     - getty-perl-core
