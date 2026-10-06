@@ -1,0 +1,30 @@
+---
+class: standard
+created: 2026-10-06T19:46:02Z
+id: 10
+priority: low
+status: backlog
+tags:
+- bug
+- validation
+- review-2026-10-06
+title: 'allowed_commands rejects a command with leading whitespace as "Command not
+  allowed: '
+updated: 2026-10-06T19:46:02Z
+---
+
+## What is wrong
+
+`_validate_command` takes the program name with `( split /\s+/, $command )[0]` (`lib/Net/Async/MCP/Run.pm:165`). With a pattern (not the special `' '`), `split` keeps a leading empty field, so a command that starts with a space or newline yields `''`:
+
+    allowed_commands => ['ls'];  command => ' ls /dev/null'
+    # isError, "Command not allowed: "
+
+Models regularly emit commands with a leading newline or indentation. The error text names no program, which makes it hard to self-correct.
+
+## Done
+
+Leading whitespace is trimmed before the program is extracted (`split ' ', $command`), and `t/30-allowed_commands.t` covers it.
+
+---
+Fleet review 2026-10-06 · kind: bug · confidence: verified
