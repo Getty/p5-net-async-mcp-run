@@ -1,0 +1,27 @@
+---
+class: standard
+created: 2026-10-06T19:46:06Z
+id: 11
+priority: low
+status: backlog
+tags:
+- hygiene
+- branch
+- docs
+- review-2026-10-06
+title: 'k4 is done, but its commit never reached main: the ''filter, not a sandbox''
+  note lives only on branch agent-phase2'
+updated: 2026-10-06T19:46:06Z
+---
+
+k4 ("Document allowed_commands is a filter, not a sandbox") is in `done`. Its commit `93bb928` (2026-09-09, `lib/Net/Async/MCP/Run.pm`, +8 lines) sits on the local branch `agent-phase2` and was never merged:
+
+    git log --oneline main..agent-phase2
+    grep -n sandbox lib/Net/Async/MCP/Run.pm   # nothing on main
+
+Same pattern as the other `phase2-*` / `agent-phase2` branches of the 2026-09-09 campaign across the fleet.
+
+Done: the commit is on `main` (merge or cherry-pick, resolve against what changed in Run.pm since), the branch is deleted, and `git branch --no-merged main` is empty.
+
+---
+Fleet review 2026-10-06 · kind: hygiene · confidence: verified
