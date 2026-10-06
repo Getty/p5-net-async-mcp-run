@@ -1,0 +1,35 @@
+---
+class: standard
+created: 2026-10-06T19:45:51Z
+id: 8
+priority: medium
+status: backlog
+tags:
+- bug
+- api
+- review-2026-10-06
+title: 'run_stdio dies outside the test suite: IO::Async::Loop and Transport::Stdio
+  are never loaded'
+updated: 2026-10-06T19:45:51Z
+---
+
+## What is wrong
+
+`run_stdio` (`lib/Net/Async/MCP/Run.pm:292-302`) calls `IO::Async::Loop->new` and `Net::Async::MCP::Server::Transport::Stdio->new`, but the module loads neither, and neither does its parent `Net::Async::MCP::Server`:
+
+    perl -Ilib ... -MNet::Async::MCP::Run -e 'print Net::Async::MCP::Server::Transport::Stdio->can("new") ? "loaded" : "NOT loaded"'
+    Stdio: NOT loaded
+    Loop: NOT loaded
+
+The README advertises the one-liner `Net::Async::MCP::Run->run_stdio(name => 'my-server')` (README.md:96), which fails with `Can't locate object method "new" via package "IO::Async::Loop"`. `t/75-run_stdio.t` does not catch it: it `use`s both modules itself (lines 4 and 8) and never calls `run_stdio` at all, it only constructs a transport.
+
+`run_stdio` also has no POD entry in the module (only in the README).
+
+## Done
+
+- `use IO::Async::Loop;` and `use Net::Async::MCP::Server::Transport::Stdio;` in `Run.pm`.
+- `t/75-run_stdio.t` actually drives `run_stdio` (a child `perl -Ilib -MNet::Async::MCP::Run -e 'Net::Async::MCP::Run->run_stdio(...)'` fed one `server/discover` line on stdin, or handles passed through) without pre-loading the two modules in the test.
+- `=method run_stdio` in the POD.
+
+---
+Fleet review 2026-10-06 · kind: bug · confidence: verified
