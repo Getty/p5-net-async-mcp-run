@@ -1,0 +1,32 @@
+---
+class: standard
+created: 2026-10-06T19:45:46Z
+id: 7
+priority: high
+status: backlog
+tags:
+- bug
+- exit-status
+- review-2026-10-06
+title: 'A command killed by a signal is reported as "Exit code: 0" and isError false'
+updated: 2026-10-06T19:45:46Z
+---
+
+## What is wrong
+
+`on_finish` computes `$exit_code = $status >> 8` (`lib/Net/Async/MCP/Run.pm:225`) and ignores the low byte of the wait status. When the process the shell exec'd dies from a signal (SIGKILL from the OOM killer, SIGSEGV, SIGPIPE), `$status >> 8` is 0, and `_format_result` (`Run.pm:288`) derives `isError` from that.
+
+## Reproduce
+
+    tools/call run { command => 'kill -9 $$' }
+    # {"content":[{"text":"Exit code: 0\n\n=== STDOUT ===\n"}],"isError":0}
+
+The model is told a crashed command succeeded.
+
+## Done
+
+- A signal death maps to the shell convention `128 + signal` (or is reported as its own `=== ERROR === killed by signal N` section) and sets `isError`.
+- Test with `kill -9 $$` and `kill -TERM $$`.
+
+---
+Fleet review 2026-10-06 · kind: bug · confidence: verified
