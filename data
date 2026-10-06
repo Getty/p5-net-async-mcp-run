@@ -1,0 +1,35 @@
+---
+class: standard
+created: 2026-10-06T19:45:42Z
+id: 6
+priority: high
+status: backlog
+tags:
+- bug
+- async
+- timeout
+- review-2026-10-06
+title: Timeout does not bound the call when the command spawns children
+updated: 2026-10-06T19:45:42Z
+---
+
+## What is wrong
+
+`_execute_command` (`lib/Net/Async/MCP/Run.pm:230-236`) handles the timeout with `$process->kill('TERM')`. That signals the `/bin/sh -c` process only. Any child the shell forked keeps running and keeps the stdout/stderr pipes open, and `IO::Async::Process` fires `on_finish` only after the process has exited **and** its pipes hit EOF. So the future the tool call waits on (`Run.pm:242`) resolves when the last child exits, not when the timeout expires.
+
+## Reproduce
+
+    tools/call run { command => 'sleep 6; echo done', timeout => 1 }
+    # returns after 6.0s with "Exit code: 124 ... Command timed out after 1s"
+
+Measured on this machine (`/bin/sh` is dash). `t/40-timeout.t:20` only tests a bare `sleep 10`, which dash execs in place, so the shell *is* the sleep and the bug stays hidden. Anything with `;`, `&&`, a pipe or a `cd dir && ...` prefix (which `working_directory` adds itself, `Run.pm:200`) takes the slow path. Because `handle()` is synchronous, the whole server is stuck for that time, and the orphaned children are never reaped by a signal.
+
+## Done
+
+- The command runs in its own process group (`setup => [ setpgid => 0 ]` or `setsid`) and the timeout signals the group (`kill -TERM => -$pid`), followed by `KILL` after a short grace period.
+- The call returns within roughly `timeout` seconds even when a grandchild holds the pipes.
+- `t/40-timeout.t` gains a compound-command case (`sleep 10; echo x`, timeout 1) that asserts on elapsed time.
+- Sibling context: MCP::Run::Bash has the same class of problem on its board (p5-mcp-run k39); worth solving the same way.
+
+---
+Fleet review 2026-10-06 · kind: bug · confidence: verified
