@@ -1,0 +1,31 @@
+---
+class: standard
+created: 2026-10-06T19:45:56Z
+id: 9
+priority: medium
+status: backlog
+tags:
+- docs
+- pod
+- review-2026-10-06
+title: POD and README show setters and an initialize method that do not exist
+updated: 2026-10-06T19:45:56Z
+---
+
+## What is wrong
+
+- `lib/Net/Async/MCP/Run.pm:317` and `:335` (and README.md:45, :67) document `$server->allowed_commands([...])` and `$server->validator(sub {...})` as setters. The accessors are read-only (`Run.pm:71-75`, `sub allowed_commands { shift->{allowed_commands} }`); the call silently does nothing:
+
+      $s->allowed_commands(['cat']);   # still ['ls'] afterwards
+
+  For a security-relevant filter that is a bad thing to get silently wrong. The working form is `->configure( allowed_commands => [...] )` or the constructor.
+- README.md:74 still documents `async method initialize()`. The method is gone since k5 (server/discover handshake); the module POD was updated (`Run.pm:342`), the README was not.
+- The validator contract is undocumented and surprising (`Run.pm:178-182`): only a return value that stringifies to exactly `1` allows the command. Any other true value (`2`, `'ok'`) blocks it and is shown to the client as the error text; `undef` blocks with a generic message. The POD example happens to return `1`.
+- `Run.pm:308` calls `name` "(required)"; the base class defaults it to `NetAsyncMCPServer`.
+
+## Done
+
+POD and README show `configure(...)`/constructor usage (or the accessors become real setters — maintainer's call), `initialize` is gone from the README, the validator return contract is spelled out, and `name` is described as optional.
+
+---
+Fleet review 2026-10-06 · kind: docs · confidence: verified
