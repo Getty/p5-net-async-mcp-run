@@ -12,6 +12,21 @@ the wire protocol itself. Built on `IO::Async` and `Future::AsyncAwait`. The who
 distribution is a single module, `lib/Net/Async/MCP/Run.pm`. No `Moo` here (the base is a
 plain `IO::Async::Notifier`) — do not introduce it.
 
+## The delegation model — why the main agent delegates
+
+Two roles only: `net-async-mcp-run-worker` (implement, refactor, debug, test) and
+`net-async-mcp-run-release-manager` (commit, `Changes`, card → done, pre-release audit).
+Both get this skill and the Perl/MCP/IO::Async set force-loaded via `briefing.skills`.
+The orchestrating main agent gets **no briefing** — it coordinates, inspects, plans,
+reviews diffs, runs tests and edits non-behavioral docs, and delegates anything
+behavior-relevant here. Reason: the classification of "behavior-relevant" is too subtle
+to guess without that skill set in context, and an unbriefed hand inside `lib/` breaks
+the invariants this skill exists to protect.
+
+Behavior-relevant = the `run` tool, command execution and its timeout, tool dispatch,
+validation/`allowed_commands`, `MCP::Run::Compress` integration, the public API, error
+handling and the tests. Pure prose docs and `Changes` notes are not.
+
 ## Where it sits — server subclass, not a transport
 
 ```
