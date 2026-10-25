@@ -19,6 +19,9 @@
       "perl-io-async-future@getty",
       "perl-mcp@getty",
       "perl-release-dist-ini@getty"
+    ],
+    "bundles": [
+      "getty-cpan-dist@getty"
     ]
   },
   "targets": [

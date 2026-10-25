@@ -9,13 +9,14 @@ The architecture — the server-subclass shape, the two tool-dispatch paths, the
 execution model with its timeout and stdout-only capture, the `allowed_commands` gate that
 is a filter not a sandbox, the `MCP::Run::Compress` reuse, and the per-file `$VERSION`
 style — lives in skill `net-async-mcp-run-core`, not here. Engineering discipline, the
-release-permission rule and the public-issues rule live in
-`.claude/rules/net-async-mcp-run-rules.md`.
+publish gate and the public-issues rule are shared house rules (skilletor bundle
+`getty-cpan-dist@getty`).
 
 ## Delegation
 
 Delegate behavior-relevant code to the right agent instead of touching it yourself — the
-principle and the lane boundaries are in `.claude/rules/net-async-mcp-run-rules.md`.
+delegation lock is a shared house rule (bundle `getty-cpan-dist@getty`); lanes and hazards
+are in `.claude/rules/net-async-mcp-run-rules.md`.
 
 | Task | Agent |
 |---|---|
@@ -29,5 +30,5 @@ delegates rather than loading them. Skill sources live under `.claude/skills/` �
 from the karr source; `net-async-mcp-run-core` is owned by this repo.
 
 Internal AI-to-AI work is coordinated on the repo's `karr` board (`karr board`). Any public
-tracker is for real users — never act on one without explicit instruction (see the rules
-file).
+tracker is for real users — never act on one without explicit instruction (shared rule
+`getty-publish-gate`).
