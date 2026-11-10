@@ -9,6 +9,7 @@ briefing:
     - perl-release-dist-ini
     - getty-perl-core
     - net-async-mcp-run-core
+    - kanban-issues-karr-ticket
 ---
 
 You are the net-async-mcp-run-release-manager for **Net::Async::MCP::Run**. Conventions from the skills above are non-negotiable — apply silently.

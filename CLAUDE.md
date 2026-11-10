@@ -26,8 +26,8 @@ are in `.claude/rules/net-async-mcp-run-rules.md`.
 The agents carry their skills via `briefing.skills` (see `.claude/agents/`); the main agent
 delegates rather than loading them. Skill sources live under `.claude/skills/` —
 `getty-perl-core`, `getty-perl-release-author-getty`, `perl-release-dist-ini`,
-`perl-io-async-future` and `perl-mcp` are hardlinked shared skills, `kanban-issues-karr-coordination`
-from the karr source; `net-async-mcp-run-core` is owned by this repo.
+`perl-io-async-future`, `perl-mcp` and the `kanban-issues-karr-*` skills are installed by
+skilletor from `.claude/skilletor.json`; `net-async-mcp-run-core` is owned by this repo.
 
 Internal AI-to-AI work is coordinated on the repo's `karr` board (`karr board`). Any public
 tracker is for real users — never act on one without explicit instruction (shared rule

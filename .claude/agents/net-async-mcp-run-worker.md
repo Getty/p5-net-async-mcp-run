@@ -8,6 +8,7 @@ briefing:
     - net-async-mcp-run-core
     - perl-mcp
     - perl-io-async-future
+    - kanban-issues-karr-ticket
 ---
 
 You are the worker for **Net::Async::MCP::Run**, an async MCP server that adds a `run` command-execution tool to `Net::Async::MCP::Server`, built on IO::Async and Future::AsyncAwait.
@@ -28,4 +29,4 @@ Never `git commit`: leave the tree commit-ready and report what changed and why,
 
 ## Coordination
 
-For internal AI-to-AI coordination this repo has a `karr` board (`karr board`); record drift you find as new tickets rather than expanding scope mid-change. Full command surface: skill `kanban-issues-karr-ticket` (hardlinked at `.claude/skills/kanban-issues-karr-ticket/`). Any public tracker is user-facing — never act on it without explicit instruction (see `.claude/rules/net-async-mcp-run-rules.md`).
+For internal AI-to-AI coordination this repo has a `karr` board (`karr board`); record drift you find as new tickets rather than expanding scope mid-change. Full command surface: skill `kanban-issues-karr-ticket` (briefed above). Any public tracker is user-facing — never act on it without explicit instruction (see `.claude/rules/net-async-mcp-run-rules.md`).
