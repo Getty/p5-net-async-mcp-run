@@ -31,4 +31,4 @@ skilletor from `.claude/skilletor.json`; `net-async-mcp-run-core` is owned by th
 
 Internal AI-to-AI work is coordinated on the repo's `karr` board (`karr board`). Any public
 tracker is for real users — never act on one without explicit instruction (shared rule
-`getty-publish-gate`).
+`publish-gate`).
